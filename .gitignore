@@ -1,0 +1,22 @@
+# Claude Code files
+.claude/
+.claude*
+
+# Simulation and test files
+*SIMULATION*
+*simulation*
+*TEST*
+*test*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
