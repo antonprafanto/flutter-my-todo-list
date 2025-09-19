@@ -27,7 +27,38 @@ Setelah tahap ini selesai, kamu akan punya:
 
 ## 📝 Step-by-Step Implementation
 
-### Step 4.1: Tambah Area untuk List (8 menit)
+### Step 4.1: Tambah Counter Tasks (5 menit)
+
+**🎯 Goal:** Tambah text counter yang menampilkan jumlah tasks.
+
+**📍 Lokasi:** Di dalam Column, SETELAH Container form input
+
+**➕ Tambah setelah Container form input:**
+
+```dart
+// Jarak vertikal setelah form
+const SizedBox(height: 20),
+// Text counter untuk menampilkan jumlah tasks
+Text(
+  'Total Tasks: ${tasks.length}',
+  style: const TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    color: Colors.black87,
+  ),
+),
+```
+
+**🔍 Penjelasan:**
+- `'Total Tasks: ${tasks.length}'` - String interpolation untuk tampilkan jumlah
+- `fontSize: 16` - Ukuran text yang sesuai
+- `fontWeight: FontWeight.w500` - Text sedikit bold
+
+**✅ Checkpoint 4.1:**
+- Ada text "Total Tasks: 0" saat belum ada task
+- Text berubah menjadi "Total Tasks: X" setelah add task
+
+### Step 4.2: Tambah Area untuk List (8 menit)
 
 **🎯 Goal:** Tambah ruang kosong di bawah counter untuk menampilkan list tasks.
 
@@ -37,7 +68,7 @@ Setelah tahap ini selesai, kamu akan punya:
 
 ```dart
 // Jarak vertikal sebelum area list
-SizedBox(height: 20),
+const SizedBox(height: 20),
 // Expanded mengambil sisa ruang yang tersedia di Column
 Expanded(
   // Container untuk styling area list
@@ -45,7 +76,7 @@ Expanded(
     // Lebar penuh
     width: double.infinity,
     // Padding di dalam container
-    padding: EdgeInsets.all(16),
+    padding: const EdgeInsets.all(16),
     // Dekorasi container: border dan border radius
     decoration: BoxDecoration(
       // Border abu-abu di sekeliling
@@ -103,7 +134,7 @@ child: tasks.isEmpty
             color: Colors.grey[400],
           ),
           // Jarak vertikal
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           // Text utama
           Text(
             'Belum ada task',
@@ -114,7 +145,7 @@ child: tasks.isEmpty
             ),
           ),
           // Jarak kecil
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           // Text penjelasan
           Text(
             'Tambahkan task pertamamu di atas!',
@@ -162,7 +193,7 @@ child: tasks.isEmpty
       // Return widget untuk item ke-index
       return Padding(
         // Jarak bawah antar item
-        padding: EdgeInsets.only(bottom: 8.0),
+        padding: const EdgeInsets.only(bottom: 8.0),
         // Container untuk styling setiap item
         child: Container(
           // Dekorasi container: warna, border, shadow
@@ -172,10 +203,10 @@ child: tasks.isEmpty
             // Shadow untuk efek elevated
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
+                color: Colors.grey.withValues(alpha: 0.2),
                 spreadRadius: 1,
                 blurRadius: 3,
-                offset: Offset(0, 2),
+                offset: const Offset(0, 2),
               ),
             ],
           ),
@@ -504,10 +535,10 @@ Widget build(BuildContext context) {
                             borderRadius: BorderRadius.circular(8.0),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.2),
+                                color: Colors.grey.withValues(alpha: 0.2),
                                 spreadRadius: 1,
                                 blurRadius: 3,
-                                offset: Offset(0, 2),
+                                offset: const Offset(0, 2),
                               ),
                             ],
                           ),

@@ -140,6 +140,154 @@ class _TodoListScreenState extends State<TodoListScreen> {
                 ],
               ),
             ),
+            // Jarak vertikal setelah form
+            const SizedBox(height: 20),
+            // Text counter untuk menampilkan jumlah tasks
+            Text(
+              'Total Tasks: ${tasks.length}',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
+            ),
+            // Jarak vertikal sebelum area list
+            const SizedBox(height: 20),
+            // Expanded mengambil sisa ruang yang tersedia di Column
+            Expanded(
+              // Container untuk styling area list
+              child: Container(
+                // Lebar penuh
+                width: double.infinity,
+                // Padding di dalam container
+                padding: const EdgeInsets.all(16),
+                // Dekorasi container: border dan border radius
+                decoration: BoxDecoration(
+                  // Border abu-abu di sekeliling
+                  border: Border.all(color: Colors.grey[300]!, width: 2),
+                  // Sudut melengkung
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                // Conditional rendering: tampil berbeda jika kosong vs ada isi
+                child: tasks.isEmpty
+                    ? // Tampilan jika list kosong
+                      Center(
+                        // Column untuk susun icon dan text vertikal
+                        child: Column(
+                          // Center semua content di tengah
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Icon inbox kosong
+                            Icon(
+                              Icons.inbox_outlined,
+                              size: 64,
+                              color: Colors.grey[400],
+                            ),
+                            // Jarak vertikal
+                            const SizedBox(height: 16),
+                            // Text utama
+                            Text(
+                              'Belum ada task',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            // Jarak kecil
+                            const SizedBox(height: 8),
+                            // Text penjelasan
+                            Text(
+                              'Tambahkan task pertamamu di atas!',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : // Tampilan jika ada tasks: ListView untuk scroll
+                      ListView.builder(
+                        // Jumlah item yang akan dibuat
+                        itemCount: tasks.length,
+                        // Function yang dipanggil untuk membuat setiap item
+                        itemBuilder: (context, index) {
+                          // Return widget untuk item ke-index
+                          return Padding(
+                            // Jarak bawah antar item
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            // Container untuk styling setiap item
+                            child: Container(
+                              // Dekorasi container: warna, border, shadow
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8.0),
+                                // Shadow untuk efek elevated
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withValues(alpha: 0.2),
+                                    spreadRadius: 1,
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              // ListTile dengan design yang lebih baik
+                              child: ListTile(
+                                // Leading: container custom untuk nomor urut
+                                leading: Container(
+                                  width: 40,
+                                  height: 40,
+                                  // Dekorasi: background biru, bentuk lingkaran
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue[100],
+                                    shape: BoxShape.circle,
+                                  ),
+                                  // Center nomor urut di tengah container
+                                  child: Center(
+                                    child: Text(
+                                      '${index + 1}',
+                                      style: TextStyle(
+                                        color: Colors.blue[700],
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                // Title dengan styling yang lebih jelas
+                                title: Text(
+                                  tasks[index],
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                // Subtitle dengan info tambahan
+                                subtitle: Text(
+                                  'Task #${index + 1} • Belum selesai',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                trailing: Icon(
+                                  Icons.radio_button_unchecked,
+                                  color: Colors.grey[400],
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                  vertical: 8.0,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ),
           ],
         ),
       ),
