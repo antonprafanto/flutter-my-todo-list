@@ -435,6 +435,34 @@ setState(() {
 taskController.clear(); // Input jadi kosong
 ```
 
+## 💾 Memory Management: Dispose Controller
+
+**⚠️ Important:** TextEditingController harus di-dispose untuk menghindari memory leak.
+
+**📍 Lokasi:** Di dalam `_TodoListScreenState` class, setelah function addTask
+
+**➕ Tambah dispose method:**
+
+```dart
+@override
+void dispose() {
+  // Dispose controller untuk menghindari memory leak
+  taskController.dispose();
+  super.dispose();
+}
+```
+
+**🔍 Penjelasan:**
+- `dispose()` dipanggil otomatis saat widget dihancurkan
+- `taskController.dispose()` membersihkan memory yang dipakai controller
+- `super.dispose()` WAJIB dipanggil untuk clean up parent class
+- Ini adalah Flutter best practice untuk semua controller/resource
+
+**✅ Memory Management Check:**
+- dispose() method sudah ada
+- taskController.dispose() sudah dipanggil
+- super.dispose() sudah dipanggil terakhir
+
 ## 🔍 Full Code Reference
 
 <details>
@@ -457,12 +485,19 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
       taskController.clear();
 
-      print('Task ditambahkan: $newTask');
-      print('Total tasks sekarang: ${tasks.length}');
-      print('Semua tasks: $tasks');
+      debugPrint('Task ditambahkan: $newTask');
+      debugPrint('Total tasks sekarang: ${tasks.length}');
+      debugPrint('Semua tasks: $tasks');
     } else {
-      print('Task tidak boleh kosong!');
+      debugPrint('Task tidak boleh kosong!');
     }
+  }
+
+  @override
+  void dispose() {
+    // Dispose controller untuk menghindari memory leak
+    taskController.dispose();
+    super.dispose();
   }
 
   @override

@@ -146,6 +146,13 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 
   @override
+  void dispose() {
+    // Dispose controller untuk menghindari memory leak
+    taskController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
