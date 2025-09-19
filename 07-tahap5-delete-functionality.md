@@ -54,7 +54,7 @@ trailing: Row(
       color: Colors.grey[400],
     ),
     // Jarak antara icon status dan delete button
-    SizedBox(width: 8),
+    const SizedBox(width: 8),
     // Button untuk delete task
     IconButton(
       // Icon tempat sampah
@@ -65,7 +65,7 @@ trailing: Row(
       // Action saat button ditekan
       onPressed: () {
         // Print untuk debug
-        print('Delete task ${index + 1}: ${tasks[index]}');
+        debugPrint('Delete task ${index + 1}: ${tasks[index]}');
       },
       // Tooltip yang muncul saat long press
       tooltip: 'Hapus task',
@@ -109,7 +109,7 @@ void removeTask(int index) async {
       // AlertDialog = popup konfirmasi
       return AlertDialog(
         // Title dialog dengan icon warning
-        title: Row(
+        title: const Row(
           children: [
             Icon(Icons.warning, color: Colors.orange),
             SizedBox(width: 8),
@@ -124,11 +124,11 @@ void removeTask(int index) async {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Text pertanyaan
-            Text('Apakah kamu yakin ingin menghapus task ini?'),
-            SizedBox(height: 12),
+            const Text('Apakah kamu yakin ingin menghapus task ini?'),
+            const SizedBox(height: 12),
             // Container untuk preview task yang akan dihapus
             Container(
-              padding: EdgeInsets.all(12),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(8),
@@ -136,7 +136,7 @@ void removeTask(int index) async {
               // Preview task dalam tanda kutip
               child: Text(
                 '"$taskToDelete"',
-                style: TextStyle(
+                style: const TextStyle(
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.w500,
                 ),
@@ -150,7 +150,7 @@ void removeTask(int index) async {
           TextButton(
             // Tutup dialog dan return false
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('Batal'),
+            child: const Text('Batal'),
           ),
           // Tombol Hapus
           ElevatedButton(
@@ -161,7 +161,7 @@ void removeTask(int index) async {
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
             ),
-            child: Text('Hapus'),
+            child: const Text('Hapus'),
           ),
         ],
       );
@@ -175,10 +175,10 @@ void removeTask(int index) async {
     });
 
     // Debug print
-    print('Task dihapus: $taskToDelete');
-    print('Sisa tasks: ${tasks.length}');
+    debugPrint('Task dihapus: $taskToDelete');
+    debugPrint('Sisa tasks: ${tasks.length}');
   } else {
-    print('Delete dibatalkan');
+    debugPrint('Delete dibatalkan');
   }
 }
 ```

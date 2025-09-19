@@ -59,6 +59,92 @@ class _TodoListScreenState extends State<TodoListScreen> {
     }
   }
 
+  // Function async untuk menghapus task dengan konfirmasi dialog
+  void removeTask(int index) async {
+    // Simpan nama task yang akan dihapus untuk ditampilkan di dialog
+    String taskToDelete = tasks[index];
+
+    // Tampilkan dialog konfirmasi dan tunggu response user
+    bool? shouldDelete = await showDialog<bool>(
+      context: context,
+      // Builder function untuk membuat content dialog
+      builder: (BuildContext context) {
+        // AlertDialog = popup konfirmasi
+        return AlertDialog(
+          // Title dialog dengan icon warning
+          title: const Row(
+            children: [
+              Icon(Icons.warning, color: Colors.orange),
+              SizedBox(width: 8),
+              Text('Konfirmasi Hapus'),
+            ],
+          ),
+          // Content dialog
+          content: Column(
+            // Column sekecil mungkin
+            mainAxisSize: MainAxisSize.min,
+            // Align kiri
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Text pertanyaan
+              const Text('Apakah kamu yakin ingin menghapus task ini?'),
+              const SizedBox(height: 12),
+              // Container untuk preview task yang akan dihapus
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                // Preview task dalam tanda kutip
+                child: Text(
+                  '"$taskToDelete"',
+                  style: const TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // Actions = tombol-tombol di bawah dialog
+          actions: [
+            // Tombol Batal
+            TextButton(
+              // Tutup dialog dan return false
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Batal'),
+            ),
+            // Tombol Hapus
+            ElevatedButton(
+              // Tutup dialog dan return true
+              onPressed: () => Navigator.of(context).pop(true),
+              // Styling button merah
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Hapus'),
+            ),
+          ],
+        );
+      },
+    );
+
+    // Cek apakah user pilih hapus (shouldDelete == true)
+    if (shouldDelete == true) {
+      setState(() {
+        tasks.removeAt(index); // Hapus dari list
+      });
+
+      // Debug print
+      debugPrint('Task dihapus: $taskToDelete');
+      debugPrint('Sisa tasks: ${tasks.length}');
+    } else {
+      debugPrint('Delete dibatalkan');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -273,9 +359,31 @@ class _TodoListScreenState extends State<TodoListScreen> {
                                     color: Colors.grey[600],
                                   ),
                                 ),
-                                trailing: Icon(
-                                  Icons.radio_button_unchecked,
-                                  color: Colors.grey[400],
+                                // Trailing: area di kanan ListTile untuk icons
+                                trailing: Row(
+                                  // Row sekecil mungkin, tidak ambil space berlebihan
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    // Icon status task (belum selesai)
+                                    Icon(
+                                      Icons.radio_button_unchecked,
+                                      color: Colors.grey[400],
+                                    ),
+                                    // Jarak antara icon status dan delete button
+                                    const SizedBox(width: 8),
+                                    // Button untuk delete task
+                                    IconButton(
+                                      // Icon tempat sampah
+                                      icon: Icon(
+                                        Icons.delete_outline,
+                                        color: Colors.red[400],
+                                      ),
+                                      // Action saat button ditekan
+                                      onPressed: () => removeTask(index),
+                                      // Tooltip yang muncul saat long press
+                                      tooltip: 'Hapus task',
+                                    ),
+                                  ],
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 16.0,
