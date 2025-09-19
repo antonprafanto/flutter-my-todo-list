@@ -50,7 +50,7 @@ import 'package:flutter/material.dart';
 // Function utama yang dijalankan pertama kali
 void main() {
   // Jalankan aplikasi Flutter, dimulai dari widget MyApp
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 ```
 
@@ -73,6 +73,9 @@ Tambahkan kode berikut setelah main function:
 ```dart
 // Deklarasi class MyApp yang extends (turunan dari) StatelessWidget
 class MyApp extends StatelessWidget {
+  // Constructor dengan key parameter untuk best practices
+  const MyApp({super.key});
+
   // Override function build yang WAJIB ada di setiap widget
   @override
   Widget build(BuildContext context) {
@@ -86,7 +89,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       // Halaman pertama yang ditampilkan saat app dibuka
-      home: TodoListScreen(),
+      home: const TodoListScreen(),
     );
   }
 }
@@ -114,6 +117,9 @@ Tambahkan kode berikut setelah MyApp class:
 ```dart
 // Deklarasi class TodoListScreen untuk halaman utama
 class TodoListScreen extends StatelessWidget {
+  // Constructor dengan key parameter untuk best practices
+  const TodoListScreen({super.key});
+
   // Override function build untuk membangun UI halaman
   @override
   Widget build(BuildContext context) {
@@ -122,12 +128,12 @@ class TodoListScreen extends StatelessWidget {
       // AppBar = bar di atas layar
       appBar: AppBar(
         // Text yang muncul di AppBar
-        title: Text('My To-Do List'),
+        title: const Text('My To-Do List'),
         // Warna background AppBar
         backgroundColor: Colors.blue,
       ),
       // Body = konten utama halaman
-      body: Center(
+      body: const Center(
         // Widget anak yang akan di-center
         child: Text(
           // Text yang ditampilkan
@@ -213,10 +219,12 @@ Jika ada masalah, ini kode lengkap `lib/main.dart`:
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -224,20 +232,22 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: TodoListScreen(),
+      home: const TodoListScreen(),
     );
   }
 }
 
 class TodoListScreen extends StatelessWidget {
+  const TodoListScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My To-Do List'),
+        title: const Text('My To-Do List'),
         backgroundColor: Colors.blue,
       ),
-      body: Center(
+      body: const Center(
         child: Text(
           'Coming Soon!',
           style: TextStyle(fontSize: 24),

@@ -46,7 +46,7 @@ Setelah tahap ini selesai, kamu akan punya:
 // Override method untuk membuat state object
 @override
 // Function yang return instance dari state class
-_TodoListScreenState createState() => _TodoListScreenState();
+State<TodoListScreen> createState() => _TodoListScreenState();
 ```
 
 #### Sub-step 3.1c: Create State class (5 menit)
@@ -63,18 +63,18 @@ class _TodoListScreenState extends State<TodoListScreen> {
     return Scaffold(
       // AppBar di bagian atas
       appBar: AppBar(
-        title: Text('My To-Do List'),
+        title: const Text('My To-Do List'),
         backgroundColor: Colors.blue,
       ),
       // Body dengan padding di semua sisi
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         // Column untuk layout vertikal
         child: Column(
           children: [
             // Container untuk area input form
             Container(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(12.0),
@@ -89,11 +89,11 @@ class _TodoListScreenState extends State<TodoListScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      prefixIcon: Icon(Icons.edit),
+                      prefixIcon: const Icon(Icons.edit),
                     ),
                   ),
                   // Jarak vertikal
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   // Container untuk button
                   SizedBox(
                     width: double.infinity,
@@ -101,13 +101,13 @@ class _TodoListScreenState extends State<TodoListScreen> {
                     child: ElevatedButton(
                       // Action saat button ditekan
                       onPressed: () {
-                        print('Button ditekan!');
+                        debugPrint('Button ditekan!');
                       },
                       // Styling button
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: 15),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
@@ -246,12 +246,12 @@ void addTask() {
     taskController.clear();
 
     // Print untuk debug - lihat perubahan di console
-    print('Task ditambahkan: $newTask');
-    print('Total tasks sekarang: ${tasks.length}');
-    print('Semua tasks: $tasks');
+    debugPrint('Task ditambahkan: $newTask');
+    debugPrint('Total tasks sekarang: ${tasks.length}');
+    debugPrint('Semua tasks: $tasks');
   } else {
     // Tampilkan pesan jika user coba submit input kosong
-    print('Task tidak boleh kosong!');
+    debugPrint('Task tidak boleh kosong!');
   }
 }
 ```
@@ -491,7 +491,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      prefixIcon: Icon(Icons.edit),
+                      prefixIcon: const Icon(Icons.edit),
                     ),
                   ),
                   SizedBox(height: 12),
@@ -502,7 +502,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: 15),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),

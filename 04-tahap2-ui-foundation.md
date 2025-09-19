@@ -47,7 +47,7 @@ body: Center(
 // Body halaman dengan padding di semua sisi
 body: Padding(
   // Jarak 16 pixel dari semua tepi layar
-  padding: EdgeInsets.all(16.0),
+  padding: const EdgeInsets.all(16.0),
   // Column = susun widget anak secara vertikal
   child: Column(
     // Daftar widget yang disusun vertikal
@@ -82,7 +82,7 @@ body: Padding(
 // Container = kotak untuk styling dan layout
 Container(
   // Padding di dalam container
-  padding: EdgeInsets.all(16.0),
+  padding: const EdgeInsets.all(16.0),
   // Dekorasi container (warna, bentuk, dll)
   decoration: BoxDecoration(
     // Warna background abu-abu terang
@@ -136,7 +136,7 @@ TextField(
       borderRadius: BorderRadius.circular(8.0),
     ),
     // Icon di sebelah kiri input
-    prefixIcon: Icon(Icons.edit),
+    prefixIcon: const Icon(Icons.edit),
   ),
 ),
 ```
@@ -165,7 +165,7 @@ TextField(
 
 ```dart
 // Jarak kosong vertikal 12 pixel
-SizedBox(height: 12),
+const SizedBox(height: 12),
 // SizedBox untuk mengatur lebar button
 SizedBox(
   // Button ambil lebar penuh container
@@ -175,7 +175,7 @@ SizedBox(
     // Function yang dijalankan saat button ditekan
     onPressed: () {
       // Print ke debug console untuk test
-      print('Button ditekan!');
+      debugPrint('Button ditekan!');
     },
     // Styling button
     style: ElevatedButton.styleFrom(
@@ -184,14 +184,14 @@ SizedBox(
       // Warna text/icon button
       foregroundColor: Colors.white,
       // Padding atas-bawah 15 pixel
-      padding: EdgeInsets.symmetric(vertical: 15),
+      padding: const EdgeInsets.symmetric(vertical: 15),
       // Bentuk button dengan sudut bulat
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
     ),
     // Isi button
-    child: Text(
+    child: const Text(
       'Add Task',
       // Styling text: ukuran 16, tebal
       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

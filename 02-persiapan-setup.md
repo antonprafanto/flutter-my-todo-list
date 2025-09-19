@@ -221,7 +221,7 @@ Semua sudah siap? Perfect!
 
 **👇 Lanjut ke tahap pertama:**
 
-# ➡️ [Tahap 1: Setup Dasar App](tahap1/README.md)
+# ➡️ [Tahap 1: Setup Dasar App](03-tahap1-setup-dasar.md)
 
 ---
 
