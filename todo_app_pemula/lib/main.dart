@@ -1,5 +1,33 @@
 import 'package:flutter/material.dart';
 
+// Model class untuk Task = blueprint/template untuk objek Task
+class Task {
+  // Property untuk menyimpan judul task
+  String title;
+  // Property untuk menyimpan status selesai/belum
+  bool isCompleted;
+
+  // Constructor = function untuk membuat Task baru
+  Task({
+    // title wajib diisi (required)
+    required this.title,
+    // isCompleted opsional, default false (belum selesai)
+    this.isCompleted = false,
+  });
+
+  // Method untuk toggle status completed (true ↔ false)
+  void toggle() {
+    // Flip boolean: true jadi false, false jadi true
+    isCompleted = !isCompleted;
+  }
+
+  // Override toString untuk debug print yang readable
+  @override
+  String toString() {
+    return 'Task{title: $title, isCompleted: $isCompleted}';
+  }
+}
+
 void main() {
   runApp(const MyApp());
 }
@@ -28,41 +56,115 @@ class TodoListScreen extends StatefulWidget {
 
 class _TodoListScreenState extends State<TodoListScreen> {
   // State variables = data yang bisa berubah
-  // List kosong untuk menyimpan semua tasks
-  List<String> tasks = [];
+  // List untuk menyimpan objek Task (bukan String lagi)
+  List<Task> tasks = [];
   // Controller untuk mengontrol TextField (ambil text, clear, dll)
   TextEditingController taskController = TextEditingController();
 
-  // Function untuk menambah task baru ke dalam list
+  // Function addTask dengan validasi comprehensive dan feedback
   void addTask() {
-    // Ambil text dari TextField dan hapus spasi di awal/akhir
-    String newTask = taskController.text.trim();
+    // Ambil dan bersihkan input text
+    String newTaskTitle = taskController.text.trim();
 
-    // Validasi: cek apakah input tidak kosong
-    if (newTask.isNotEmpty) {
-      // setState() WAJIB untuk update UI setelah ubah data
-      setState(() {
-        // Tambah task baru ke dalam list
-        tasks.add(newTask);
-      });
-
-      // Clear input field setelah berhasil menambah
-      taskController.clear();
-
-      // Print untuk debug - lihat perubahan di console
-      debugPrint('Task ditambahkan: $newTask');
-      debugPrint('Total tasks sekarang: ${tasks.length}');
-      debugPrint('Semua tasks: $tasks');
-    } else {
-      // Tampilkan pesan jika user coba submit input kosong
-      debugPrint('Task tidak boleh kosong!');
+    // Validasi 1: Cek apakah input kosong
+    if (newTaskTitle.isEmpty) {
+      // Tampilkan SnackBar warning untuk input kosong
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          // Content dengan icon dan text
+          content: const Row(
+            children: [
+              Icon(Icons.warning, color: Colors.white),
+              SizedBox(width: 8),
+              Text('Task tidak boleh kosong!'),
+            ],
+          ),
+          // Styling SnackBar
+          backgroundColor: Colors.orange,
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      // Stop execution jika gagal validasi
+      return;
     }
+
+    // Validasi 2: Cek task duplikat (case insensitive)
+    bool isDuplicate = tasks.any((task) =>
+        task.title.toLowerCase() == newTaskTitle.toLowerCase());
+
+    if (isDuplicate) {
+      // SnackBar untuk task duplikat
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.info, color: Colors.white),
+              const SizedBox(width: 8),
+              // Expanded agar text tidak overflow
+              Expanded(child: Text('Task "$newTaskTitle" sudah ada!')),
+            ],
+          ),
+          backgroundColor: Colors.blue,
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    // Validasi 3: Cek panjang task maksimal 100 karakter
+    if (newTaskTitle.length > 100) {
+      // SnackBar untuk task terlalu panjang
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Row(
+            children: [
+              Icon(Icons.error, color: Colors.white),
+              SizedBox(width: 8),
+              Expanded(child: Text('Task terlalu panjang! Maksimal 100 karakter.')),
+            ],
+          ),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    // Semua validasi passed - add task
+    setState(() {
+      Task newTask = Task(title: newTaskTitle);
+      tasks.add(newTask);
+    });
+
+    // Clear input
+    taskController.clear();
+
+    // Success feedback
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.check_circle, color: Colors.white),
+            const SizedBox(width: 8),
+            Expanded(child: Text('Task "$newTaskTitle" berhasil ditambahkan!')),
+          ],
+        ),
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 1),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+
+    debugPrint('Task ditambahkan: $newTaskTitle');
   }
 
   // Function async untuk menghapus task dengan konfirmasi dialog
   void removeTask(int index) async {
-    // Simpan nama task yang akan dihapus untuk ditampilkan di dialog
-    String taskToDelete = tasks[index];
+    // Simpan task yang akan dihapus untuk ditampilkan di dialog
+    Task taskToDelete = tasks[index];
 
     // Tampilkan dialog konfirmasi dan tunggu response user
     bool? shouldDelete = await showDialog<bool>(
@@ -98,7 +200,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                 ),
                 // Preview task dalam tanda kutip
                 child: Text(
-                  '"$taskToDelete"',
+                  '"${taskToDelete.title}"', // Akses .title property
                   style: const TextStyle(
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w500,
@@ -137,12 +239,62 @@ class _TodoListScreenState extends State<TodoListScreen> {
         tasks.removeAt(index); // Hapus dari list
       });
 
+      // Success feedback for delete - check if still mounted
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.delete, color: Colors.white),
+                const SizedBox(width: 8),
+                Expanded(child: Text('Task "${taskToDelete.title}" dihapus')),
+              ],
+            ),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+
       // Debug print
-      debugPrint('Task dihapus: $taskToDelete');
+      debugPrint('Task dihapus: ${taskToDelete.title}');
       debugPrint('Sisa tasks: ${tasks.length}');
     } else {
       debugPrint('Delete dibatalkan');
     }
+  }
+
+  // Function untuk toggle status completed
+  void toggleTask(int index) {
+    setState(() {
+      tasks[index].toggle(); // Pakai method toggle dari Task class
+    });
+
+    Task task = tasks[index];
+    String message = task.isCompleted
+        ? 'Selamat! Task "${task.title}" selesai! 🎉'
+        : 'Task "${task.title}" ditandai belum selesai';
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(
+              task.isCompleted ? Icons.celebration : Icons.undo,
+              color: Colors.white,
+            ),
+            const SizedBox(width: 8),
+            Expanded(child: Text(message)),
+          ],
+        ),
+        backgroundColor: task.isCompleted ? Colors.green : Colors.blue,
+        duration: const Duration(seconds: 1),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+
+    debugPrint('Task ${task.isCompleted ? "completed" : "uncompleted"}: ${task.title}');
   }
 
   @override
@@ -186,6 +338,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
                   TextField(
                     // Controller untuk mengontrol TextField
                     controller: taskController,
+                    textCapitalization: TextCapitalization.sentences, // Auto capitalize
+                    maxLength: 100, // Limit input length
                     // Styling dan decorasi input field
                     decoration: InputDecoration(
                       // Text yang muncul saat input kosong
@@ -197,7 +351,10 @@ class _TodoListScreenState extends State<TodoListScreen> {
                       ),
                       // Icon di sebelah kiri input
                       prefixIcon: const Icon(Icons.edit),
+                      counterText: '', // Hide character counter
+                      helperText: 'Maksimal 100 karakter', // Helper text
                     ),
+                    onSubmitted: (value) => addTask(), // Enter key also adds task
                   ),
                   // Jarak kosong vertikal 12 pixel
                   const SizedBox(height: 12),
@@ -235,6 +392,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
             ),
             // Jarak vertikal setelah form
             const SizedBox(height: 20),
+
             // Text counter untuk menampilkan jumlah tasks
             Text(
               'Total Tasks: ${tasks.length}',
@@ -306,16 +464,21 @@ class _TodoListScreenState extends State<TodoListScreen> {
                         itemCount: tasks.length,
                         // Function yang dipanggil untuk membuat setiap item
                         itemBuilder: (context, index) {
-                          // Return widget untuk item ke-index
+                          Task task = tasks[index]; // Ambil Task object
+
                           return Padding(
                             // Jarak bawah antar item
                             padding: const EdgeInsets.only(bottom: 8.0),
                             // Container untuk styling setiap item
                             child: Container(
-                              // Dekorasi container: warna, border, shadow
+                              // Dekorasi container berubah berdasarkan status
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                // Background berubah berdasarkan status
+                                color: task.isCompleted ? Colors.green[50] : Colors.white,
                                 borderRadius: BorderRadius.circular(8.0),
+                                border: task.isCompleted
+                                    ? Border.all(color: Colors.green[200]!, width: 2) // Border hijau jika selesai
+                                    : null,
                                 // Shadow untuk efek elevated
                                 boxShadow: [
                                   BoxShadow(
@@ -326,75 +489,92 @@ class _TodoListScreenState extends State<TodoListScreen> {
                                   ),
                                 ],
                               ),
-                              // ListTile dengan design yang lebih baik
-                              child: ListTile(
-                                // Leading: container custom untuk nomor urut
-                                leading: Container(
-                                  width: 40,
-                                  height: 40,
-                                  // Dekorasi: background biru, bentuk lingkaran
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue[100],
-                                    shape: BoxShape.circle,
+                              child: Opacity(
+                                opacity: task.isCompleted ? 0.7 : 1.0, // Completed task lebih transparan
+                                // ListTile dengan design yang lebih baik
+                                child: ListTile(
+                                  // Leading: container custom untuk nomor urut atau check icon
+                                  leading: Container(
+                                    width: 40,
+                                    height: 40,
+                                    // Dekorasi berubah berdasarkan status
+                                    decoration: BoxDecoration(
+                                      color: task.isCompleted ? Colors.green[100] : Colors.blue[100],
+                                      shape: BoxShape.circle,
+                                    ),
+                                    // Center nomor urut atau check icon di tengah container
+                                    child: Center(
+                                      child: task.isCompleted
+                                          ? Icon(Icons.check, color: Colors.green[700]) // Icon check jika selesai
+                                          : Text(
+                                              '${index + 1}',
+                                              style: TextStyle(
+                                                color: Colors.blue[700],
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                    ),
                                   ),
-                                  // Center nomor urut di tengah container
-                                  child: Center(
-                                    child: Text(
-                                      '${index + 1}',
-                                      style: TextStyle(
-                                        color: Colors.blue[700],
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
+                                  // Title dengan styling conditional
+                                  title: Text(
+                                    task.title, // Akses .title dari Task object
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: task.isCompleted ? Colors.grey[600] : Colors.black87,
+                                      // STRIKETHROUGH untuk completed task
+                                      decoration: task.isCompleted
+                                          ? TextDecoration.lineThrough
+                                          : TextDecoration.none,
+                                    ),
+                                  ),
+                                  // Subtitle dengan status yang jelas
+                                  subtitle: Text(
+                                    task.isCompleted ? 'Selesai ✅' : 'Belum selesai',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: task.isCompleted ? Colors.green[600] : Colors.grey[600],
+                                    ),
+                                  ),
+                                  // Trailing: area di kanan ListTile untuk icons
+                                  trailing: Row(
+                                    // Row sekecil mungkin, tidak ambil space berlebihan
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      // CHECKBOX untuk toggle complete
+                                      IconButton(
+                                        icon: Icon(
+                                          task.isCompleted
+                                              ? Icons.check_circle
+                                              : Icons.radio_button_unchecked,
+                                          color: task.isCompleted ? Colors.green[600] : Colors.grey[400],
+                                        ),
+                                        onPressed: () => toggleTask(index),
+                                        tooltip: task.isCompleted
+                                            ? 'Mark as incomplete'
+                                            : 'Mark as complete',
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                // Title dengan styling yang lebih jelas
-                                title: Text(
-                                  tasks[index],
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                                // Subtitle dengan info tambahan
-                                subtitle: Text(
-                                  'Task #${index + 1} • Belum selesai',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                // Trailing: area di kanan ListTile untuk icons
-                                trailing: Row(
-                                  // Row sekecil mungkin, tidak ambil space berlebihan
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    // Icon status task (belum selesai)
-                                    Icon(
-                                      Icons.radio_button_unchecked,
-                                      color: Colors.grey[400],
-                                    ),
-                                    // Jarak antara icon status dan delete button
-                                    const SizedBox(width: 8),
-                                    // Button untuk delete task
-                                    IconButton(
-                                      // Icon tempat sampah
-                                      icon: Icon(
-                                        Icons.delete_outline,
-                                        color: Colors.red[400],
+                                      // Jarak antara toggle dan delete button
+                                      const SizedBox(width: 8),
+                                      // Button untuk delete task
+                                      IconButton(
+                                        // Icon tempat sampah
+                                        icon: Icon(
+                                          Icons.delete_outline,
+                                          color: Colors.red[400],
+                                        ),
+                                        // Action saat button ditekan
+                                        onPressed: () => removeTask(index),
+                                        // Tooltip yang muncul saat long press
+                                        tooltip: 'Hapus task',
                                       ),
-                                      // Action saat button ditekan
-                                      onPressed: () => removeTask(index),
-                                      // Tooltip yang muncul saat long press
-                                      tooltip: 'Hapus task',
-                                    ),
-                                  ],
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: 8.0,
+                                    ],
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0,
+                                    vertical: 8.0,
+                                  ),
                                 ),
                               ),
                             ),
@@ -408,4 +588,5 @@ class _TodoListScreenState extends State<TodoListScreen> {
       ),
     );
   }
+
 }
