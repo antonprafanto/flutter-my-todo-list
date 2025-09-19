@@ -43,7 +43,7 @@ flutter clean && flutter run  # Fresh restart
 
 | Tahap | Time | What You Build | Key Concepts |
 |-------|------|----------------|--------------|
-| **[1](tutorial/tahap1/README.md)** | 30min | Basic app structure | Widgets, Scaffold |
+| **[1](03-tahap1-setup-dasar.md)** | 30min | Basic app structure | Widgets, Scaffold |
 | **[2](tutorial/tahap2/README.md)** | 45min | Input form UI | Layout, Styling |
 | **[3](tutorial/tahap3/README.md)** | 60min | Working add task | State, Controllers |
 | **[4](tutorial/tahap4/README.md)** | 45min | Display task list | ListView, Dynamic UI |
