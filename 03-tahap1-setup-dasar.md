@@ -198,11 +198,11 @@ class TodoListScreen extends StatelessWidget {
 **Screenshot/Visual Check:**
 ```
 ╔══════════════════════════════╗
-║  📱 My To-Do List          ║  ← AppBar biru
+║  📱 My To-Do List           ║  ← AppBar biru
 ╠══════════════════════════════╣
 ║                              ║
 ║                              ║
-║      Coming Soon!           ║  ← Text di tengah
+║      Coming Soon!            ║  ← Text di tengah
 ║                              ║
 ║                              ║
 ╚══════════════════════════════╝
